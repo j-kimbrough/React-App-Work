@@ -26,16 +26,31 @@ const View = () => {
 }
 =======
 import usePresenter from './presenter'
+import { useForm } from "react-hook-form"
+import { useEffect } from 'react'
+
+
 const View = () => {
-    const [register, onSubmit, userLoading] = usePresenter()
+    const {onSubmit, userLoading, onNameChange} = usePresenter()
+
+    const { register, handleSubmit, watch } = useForm({
+        defaultValues: {
+            email: "testing@mail.com"
+        }
+    });
+    const { name } = watch()
+
+    useEffect(() => {
+        onNameChange(name)
+    }, [name])
 
     if (userLoading) {
         return <div>Loading...</div>
     }
     else {
-        return <form onSubmit={onSubmit}>
+        return <form onSubmit={handleSubmit((data) => onSubmit(data))}>
             <label>Name</label>
-            <input type="text" name="name" {...register('name')} />
+            <input type="text" name="name" {...register('name', {required: true})} />
             <br />
             <label>Class</label>
             <input type="text" name="classValue" {...register('classValue')} />
