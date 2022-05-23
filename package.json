@@ -6,12 +6,23 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
+<<<<<<< daf7b72c93603e1a70d3a69f9e0197c8a9f7c700
+<<<<<<< 55dc06a7f3fb7a65d18baae213e1ff5bf535cf18
+=======
+>>>>>>> Update
     "axios": "^0.27.2",
     "axios-hooks": "^3.0.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.31.2",
     "react-router-dom": "^6.3.0",
+<<<<<<< daf7b72c93603e1a70d3a69f9e0197c8a9f7c700
+=======
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+>>>>>>> Initialize project using Create React App
+=======
+>>>>>>> Update
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -38,5 +49,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/react-hooks": "^8.0.0",
+    "axios-hooks-mock": "^1.1.0"
   }
 }
