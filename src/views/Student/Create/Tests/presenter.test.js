@@ -1,64 +1,51 @@
 import usePresenter from '../presenter'
 import { renderHook, act } from '@testing-library/react-hooks'
 import useAxios from 'axios-hooks'
+
 jest.mock('axios-hooks');
-
-describe('Test Presenter', () => {
-    const insert = jest.fn()
-    const fetch = jest.fn()
-    const response = {
-        updatedAt: (new Date()).toISOString()
+jest.mock('../UseCases/InsertStudentUseCase', () => {
+    return function () {
+        return {
+            executeAsync: (data) => Promise.resolve({
+                success: true,
+                data: data
+            })
+        }
     }
-    
+})
+describe('Test Presenter', () => {
+    const fetch = jest.fn()
 
-    test('should submit file', async () => {
+    const response = {
+        success: true,
+        data: (new Date()).toISOString()
+    }
+    test('submit form', async () => {
         useAxios.mockImplementation((value) => {
-            if(value.url === '/users/1' && value.method === 'PUT'){
-                return [
-                    { data: { response }, loading: false },
-                    insert
-                ]
-            }
-            else if(value.url === '/users/1' && value.method === 'GET'){
-                return [
-                    { data: { response }, loading: false },
-                    fetch
-                ]
-            }
-            else{
-                return []
-            }
+            return [
+                { data: { response }, loading: false },
+                fetch
+            ]
         })
         const { result } = renderHook(() => usePresenter())
-
         await act(async () => {
             let form = {
                 name: "test"
             }
-            let value = await result.current.onSubmit(form)
+            await result.current.onSubmit(form)
             expect(result.current.userLoading).toBe(false)
-            expect(value).toBe(form)
+            console.log(result.current.insertResult)
+            expect(result.current.insertResult).toBe(form)
         })
     })
 
-    test('on name update', async () => {        
+    test('on name update', async () => {
         useAxios.mockImplementation((value) => {
-            console.log(value)
-            if(value.url === '/users/1' && value.method === 'PUT'){
-                return [
-                    { data: { response }, loading: false },
-                    insert
-                ]
-            }
-            else if(value.url === '/users/1' && value.method === 'GET'){
-                return [
-                    { data: { response }, loading: false },
-                    fetch
-                ]
-            }
-            else{
-                return []
-            }
+            return [
+                { data: { response }, loading: false },
+                fetch
+            ]
+
         })
         const { result } = renderHook(() => usePresenter())
         await act(async () => {

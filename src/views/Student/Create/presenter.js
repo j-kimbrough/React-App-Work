@@ -1,59 +1,20 @@
-<<<<<<< b48ca88ab422be9573de87e7bbe46d3f2e289457
-<<<<<<< daf7b72c93603e1a70d3a69f9e0197c8a9f7c700
-import { useEffect } from 'react'
-import { useForm } from "react-hook-form"
 import useAxios from 'axios-hooks'
-import {useName} from '../../../contexts/nameContext'
-
-const usePresenter = () => {
-    const {updateName} = useName()
-    const { register, handleSubmit, watch } = useForm({
-        defaultValues: {
-            email: "testing@mail.com"
-        }
-    });
-    const { name } = watch()
-
-    const [{ loading: userLoading, error, data }, insert] = useAxios(
-        {
-            url: '/users/1',
-            method: 'PUT',
-        },
-        { manual: true }
-    )
-    
-
-    useEffect(() => {
-        //Here, we can fetch values that depend on other components
-        updateName(name)
-    }, [name])
-    const onSubmit = handleSubmit((data) => insert(data))
-    return [register, onSubmit, userLoading, error, data]
-
-}
-=======
-import { useEffect } from 'react'
-import { useForm } from "react-hook-form"
-=======
->>>>>>> Updated with tests
-import useAxios from 'axios-hooks'
+import { useState } from 'react'
 import { useName } from '../../../contexts/nameContext'
-import URL from './urls'
+import InsertUseCase from './UseCases/InsertStudentUseCase'
+
 const usePresenter = () => {
     const { updateName } = useName()
-    const [{ loading: userLoading, error, data }, insert] = useAxios(
-        {
-            url: URL.PutUser,
-            method: 'PUT',
-        },
-        { manual: true }
-    )
+    const insertUseCase = new InsertUseCase();
+    const [userLoading, setUserLoading] = useState(false)
+    const [insertResult, setInsertResult] = useState();
+    const [insertError, setInsertError] = useState();
     const [{ data: user, loading: getLoading, error: getError }, fetch] = useAxios(
         {
-            url: URL.FetchUser,
+            url: '/users/1',
             method: 'GET'
         },
-        {manual: true}
+        { manual: true }
     )
 
     const onNameChange = async (name) => {
@@ -64,11 +25,24 @@ const usePresenter = () => {
     }
 
     const onSubmit = async (data) => {
-        await insert(data)
-        return data
+        setUserLoading(true)
+        await insertUseCase.executeAsync(data)
+            .then((result) => {
+                if (result.success){
+                    console.log(result.data)
+                    setInsertResult(result.data)
+                }
+                else
+                    setInsertError(result.data)
+            })
+            .catch((error) => {
+                setInsertError(error)
+            })
+            .finally(()=>{
+                setUserLoading(false)
+            })                    
     }
-    return { onSubmit, userLoading, error, data, onNameChange,user, fetch }
+    return { onSubmit, userLoading, error: insertError, insertResult, onNameChange, user, fetch }
 
 }
->>>>>>> Update
 export default usePresenter
