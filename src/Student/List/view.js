@@ -1,8 +1,12 @@
 import usePresenter from './presenter'
+import { useEffect } from 'react'
 
 const View = () => {
-    const { data, onSelect, loading, current } = usePresenter()
+    const { data, onSelect, loading, current, loadPage } = usePresenter()
 
+    useEffect(()=>{
+        loadPage()
+    },[])
 
     if (loading) {
         return <div>Loading...</div>

@@ -13,27 +13,12 @@ const usePresenter = () => {
         setCurrent(data.find(x => x.id === id).avatar)
     }
 
-    useEffect(() => {
-        listUseCase.executeAsync(new ListDTO(currentPage + 1))
-            .then((result) => {
-                if (result.success) {
-                    setData(result.data.data)
-                    setCurrent(result.data.data[0].avatar)
-                    setCurrentPage(currentPage + 1)
-                }
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }, [])
-
-    const onNext = async (data) => {
-        setLoading(true)
+    const loadPage = async () => {
         await listUseCase.executeAsync(new ListDTO(currentPage + 1))
             .then((result) => {
                 if (result.success) {
-                    console.log(result.data)
                     setData(result.data)
+                    setCurrent(result.data[0].avatar)
                     setCurrentPage(currentPage + 1)
                 }
             })
@@ -41,7 +26,7 @@ const usePresenter = () => {
                 setLoading(false)
             })
     }
-    return { onNext, loading, data, onSelect, current }
+    return { loading, data, onSelect, current, loadPage }
 
 }
 export default usePresenter

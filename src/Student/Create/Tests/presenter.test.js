@@ -1,38 +1,34 @@
 import usePresenter from '../presenter'
 import { renderHook, act } from '@testing-library/react-hooks'
-import useAxios from 'axios-hooks'
+import MockAdapter from 'axios-mock-adapter'
+import instance from '../../../core/api'
 
-jest.mock('axios-hooks');
-jest.mock('../UseCases/InsertStudentUseCase', () => {
-    return function () {
-        return {
-            executeAsync: (data) => Promise.resolve({
-                success: true,
-                data: data
-            })
-        }
-    }
+var mock = new MockAdapter(instance)
+
+let response = {
+    "id": 8,
+    "email": "lindsay.ferguson@reqres.in",
+    "first_name": "Lindsay",
+    "last_name": "Ferguson",
+    "avatar": "https://reqres.in/img/faces/8-image.jpg"
+}
+
+
+mock.onPost("/users/1").reply(200, {
+    data: response
 })
+
 describe('Test Presenter', () => {
-    const fetch = jest.fn()
 
     const response = {
         success: true,
         data: (new Date()).toISOString()
     }
     test('submit form', async () => {
-        useAxios.mockImplementation((value) => {
-            return [
-                { data: { response }, loading: false },
-                fetch
-            ]
-        })
         const { result } = renderHook(() => usePresenter())
         await act(async () => {
-            let form = {
-                name: "test"
-            }
-            await result.current.onSubmit(form)
+            let form = response
+            await result.current.onSubmit(response)
             expect(result.current.userLoading).toBe(false)
             console.log(result.current.insertResult)
             expect(result.current.insertResult).toBe(form)
@@ -40,18 +36,10 @@ describe('Test Presenter', () => {
     })
 
     test('on name update', async () => {
-        useAxios.mockImplementation((value) => {
-            return [
-                { data: { response }, loading: false },
-                fetch
-            ]
-
-        })
         const { result } = renderHook(() => usePresenter())
         await act(async () => {
             let value = await result.current.onNameChange("value")
             expect(value).toBe("value")
-            expect(result.current.user.response).toBe(response)
         })
     })
 })

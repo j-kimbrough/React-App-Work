@@ -14,7 +14,7 @@ export default class ListUseCase extends UseCase {
         return axios.get('/users', { params: { page: request.page } })
             .then((value) => ({
                 success: true,
-                data: value.data
+                data: value.data.data
             }))
             .catch((error) => ({
                 success: false,
