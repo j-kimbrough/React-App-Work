@@ -1,21 +1,13 @@
-import useAxios from 'axios-hooks'
 import { useState } from 'react'
-import { useName } from '../../../contexts/nameContext'
-import InsertUseCase from './UseCases/InsertStudentUseCase'
+import { useName } from '../../contexts/nameContext'
+import InsertUseCase from './UseCases/CreateUseCase'
 
 const usePresenter = () => {
     const { updateName } = useName()
     const insertUseCase = new InsertUseCase();
     const [userLoading, setUserLoading] = useState(false)
     const [insertResult, setInsertResult] = useState();
-    const [insertError, setInsertError] = useState();
-    const [{ data: user, loading: getLoading, error: getError }, fetch] = useAxios(
-        {
-            url: '/users/1',
-            method: 'GET'
-        },
-        { manual: true }
-    )
+    const [insertError, setInsertError] = useState();    
 
     const onNameChange = async (name) => {
         //Can load additional data that depends on name change
@@ -42,7 +34,7 @@ const usePresenter = () => {
                 setUserLoading(false)
             })                    
     }
-    return { onSubmit, userLoading, error: insertError, insertResult, onNameChange, user, fetch }
+    return { onSubmit, userLoading, error: insertError, insertResult, onNameChange }
 
 }
 export default usePresenter

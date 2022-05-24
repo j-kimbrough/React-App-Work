@@ -1,7 +1,7 @@
-import UseCase from '../../../../core/UseCase'
-import axios from 'axios'
+import UseCase from '../../../core/UseCase'
+import axios from '../../../core/api'
 /**
- * @typedef {import ('./InsertStudentDTO').default} InsertStudentDTO
+ * @typedef {import ('./CreateDTO').default} InsertStudentDTO
  */
 export default class InsertStudentUseCase extends UseCase {
 
